@@ -43,6 +43,7 @@
 </template>
 
 <script>
+    const appUrl = process.env.MIX_API_URL;
     export default {
         props:['number'],
         data() {
@@ -53,7 +54,7 @@
             }
         },
         mounted() {
-            axios.get('http://127.0.0.1:8000'+this.number)
+            axios.get(appUrl+this.number)
             .then((response)=>{
                 this.data = response.data;
                 console.log("ahoj");
@@ -71,7 +72,7 @@
         },
         methods: {
             ajax_password: function (event, id, password) {
-                axios.post('http://127.0.0.1:8000',{id:id,password: password})
+                axios.post(appUrl,{id:id,password: password})
                     .then((response) => {
                         if(response.status===200){
                             let path = response.data.download_link;
@@ -79,6 +80,7 @@
                         }
                         this.password="";
                     });
+
             },
             youtube_link:function(url){
                 if (url.includes('youtu.be')){
@@ -93,5 +95,6 @@
                 return url.replace('spotify.com/','spotify.com/embed/');
             }
         }
+
     }
 </script>

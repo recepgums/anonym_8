@@ -79,7 +79,7 @@
 </template>
 
 <script>
-    const appUrl = 'http://127.0.0.1:8000';
+    const appUrl = process.env.MIX_API_URL;
     import axios from 'axios';
     import Chat from './components/Chat';
     import Links from './components/Links';

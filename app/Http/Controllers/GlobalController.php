@@ -23,11 +23,9 @@ class GlobalController extends Controller
     }
 
     public function create_global(Request $request){
-        $rules = array(
+        $error = Validator::make($request->all(),[
             'file'=>'max:3000000'
-        );
-        $error = Validator::make($request->all(),$rules);
-
+        ]);
         if ($error->fails()){
             return response()->json(['error'=>$error->errors()->all()]);
         }

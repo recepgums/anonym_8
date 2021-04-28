@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\GlobalRoomMessages;
 use App\Models\GuestRoomMessages;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class FollowController extends Controller
 {
@@ -32,5 +34,30 @@ class FollowController extends Controller
     {
         $data = GuestRoomMessages::where('room_number', $number)->orderBy('created_at', 'desc')->get();
         return $data;
+    }
+    public function upload(Request $request)
+    {
+        $rules = array(
+            'file'=>'max:3000000'
+        );
+        $error = Validator::make($request->all(),$rules);
+
+        if ($error->fails()){
+            return response()->json(['error'=>$error->errors()->all()]);
+        }
+        $new = new GlobalRoomMessages();
+        $new->title = $request->title;
+        if ($request->hasFile('file')){
+            $uploadingS3 = $request->file('file')->store('public/global_files','s3');
+            Storage::disk('s3')->setVisibility($uploadingS3,'public');
+            $new->url = Storage::disk('s3')->url($uploadingS3);
+            $new->file_name = $request->file('file')->getClientOriginalName();;
+        }
+
+        if($request->password){
+            $new->password =Hash::make($request->password);
+        }
+        $new->save();
+        return response()->json(["status"=>200,"data"=>$new]);
     }
 }

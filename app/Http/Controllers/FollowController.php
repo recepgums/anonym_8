@@ -50,8 +50,7 @@ class FollowController extends Controller
         if ($request->hasFile('file')){
             $uploadingS3 = $request->file('file')->store('public/global_files','s3');
             Storage::disk('s3')->setVisibility($uploadingS3,'public');
-            $new->url = Storage::disk('s3')->url($uploadingS3);
-            $new->file_name = $request->file('file')->getClientOriginalName();;
+            $new->file_name = Storage::disk('s3')->url($uploadingS3);
         }
 
         if($request->password){

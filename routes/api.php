@@ -33,5 +33,6 @@ Route::post('/removeFile',[FollowController::class,'delete']);
 Route::get('/private_room/{number}',[FollowController::class,'private_room_index']);
 Route::get('/', [FollowController::class,'index']);
 Route::get('/get/{id}', [FollowController::class,'detail']);
+Route::post('/{file_id}/password', [FollowController::class,'password']);
 Route::post('/', [FollowController::class,'upload']);
 

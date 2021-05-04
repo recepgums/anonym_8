@@ -5,12 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\GlobalRoomMessages;
 use App\Models\GuestRoomMessages;
 use Illuminate\Http\Request;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class FollowController extends Controller
 {
+    /**
+     * @var UrlGenerator
+     */
+    private $urlGenerator;
+
+    public function __construct(UrlGenerator $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
     public function index()
     {
         $texts = GlobalRoomMessages::where('file_name',null)->select(['id','title','created_at'])->orderBy('created_at','desc')->get();
@@ -58,5 +69,15 @@ class FollowController extends Controller
         }
         $new->save();
         return response()->json(["status"=>200,"data"=>$new]);
+    }
+
+    public function password(Request $request,$file_id)
+    {
+        $file = GlobalRoomMessages::findOrFail($file_id);
+        if (password_verify($request->password, $file->password)) {
+            return response()->json(['status'=>200,'download_link'=>$this->urlGenerator->to($file->file_name)]);
+        }else{
+            return response()->json(['status'=>400,'message'=>"password is incorrect"]);
+        }
     }
 }

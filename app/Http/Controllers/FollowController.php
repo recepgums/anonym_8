@@ -25,6 +25,7 @@ class FollowController extends Controller
     public function index()
     {
         $texts = GlobalRoomMessages::where('file_name',null)->select(['id','title','created_at'])->orderBy('created_at','desc')->get();
+        $youtubes = GlobalRoomMessages::where('file_name',null)->where('title','LIKE','%youtube%')->select(['id','title','created_at'])->orderBy('created_at','desc')->get();
         $files = GlobalRoomMessages::whereNotNull('file_name')->whereNotNull('password')->orderBy('created_at','desc')->select(['id','title','created_at'])->get();
         return response()->json(['status'=>200,'texts'=>$texts,'files'=>$files]);
     }

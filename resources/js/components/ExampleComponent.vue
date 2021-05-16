@@ -171,7 +171,7 @@
 
 
             ajax_password: function (event, id, password, key) {
-                axios.post( 'https://anonymupload.com/api/ajaxdeneme', {id: id, password: password})
+                axios.post( appUrl+'/api/ajaxdeneme', {id: id, password: password})
                     .then((response) => {
                         if (response.data.status === 200) {
                             this.files[key].remove = true

@@ -36,10 +36,14 @@ class FollowController extends Controller
     }
     public function delete(Request $request)
     {
-        $data = GlobalRoomMessages::find($request->id);
-        $data->delete();
-        Storage::disk('s3')->delete('public/global_files/fry0mkpnMFfOR2CXzRh7s3FEF06Kj2qtv9IdAz1D.pdf');
-        return response()->json(['status' => 200, "message" => "Success"]);
+        $file = GlobalRoomMessages::find($request->id);
+        if (password_verify($request->password, $file->password)) {
+            $file->delete();
+            Storage::disk('s3')->delete('public/global_files/fry0mkpnMFfOR2CXzRh7s3FEF06Kj2qtv9IdAz1D.pdf');
+            return response()->json(['status' => 200, "message" => "Success"]);
+        }else{
+            return response()->json(['status'=>400,'message'=>"File couldn't delete"]);
+        }
     }
 
     public function private_room_index($number)

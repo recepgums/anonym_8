@@ -32,33 +32,10 @@ class GlobalController extends Controller
         }
         $new = new GlobalRoomMessages();
         $new->title = $request->title;
-
         if ($request->hasFile('file')){
 
-            if (count($request->file) > 1){
-                dd('a');
-                $zip = new ZipArchive();
-                $tempFile = tmpfile();
-                $tempFileUri = stream_get_meta_data($tempFile)['uri'];
-                if ($zip->open($tempFileUri, ZipArchive::CREATE) === TRUE) {
-                    // Add File in ZipArchive
-                    foreach($request->file as $file)
-                    {
-                        if (! $zip->addFile($file, basename($file))) {
-                            return response()->json(['status'=>500,"Files couldn't compress"]);
-                        }
-                    }
-                    // Close ZipArchive
-                    $zip->close();
-                } else {
-                    return response()->json(['status'=>500,"Could not open ZIP file."]);
-                }
-                rename($tempFileUri, public_path() . DIRECTORY_SEPARATOR .'uploads/zips/aaaa.zip');
-                dd('oldu');
-            }else{
-                $uploadingS3 = $request->file('files')[0]->store('public/global_files','s3');
-                $new->file_name = Storage::disk('s3')->url($uploadingS3);
-            }
+            $uploadingS3 = $request->file('file')->store('public/global_files','s3');
+            $new->file_name = Storage::disk('s3')->url($uploadingS3);
         }
 
         if($request->password){

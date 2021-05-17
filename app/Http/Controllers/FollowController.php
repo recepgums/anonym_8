@@ -77,13 +77,20 @@ class FollowController extends Controller
         $new = new GlobalRoomMessages();
         $new->title = $request->title;
         if ($request->hasFile('file')) {
-            if (count($request->file) === 1) {
-                $uploadingS3 = $request->file('file')[0]->store('public/global_files', 's3');
+            if(is_array($request->file )) {
+                if (count($request->file) === 1) {
+                    $uploadingS3 = $request->file('file')[0]->store('public/global_files', 's3');
+                    Storage::disk('s3')->setVisibility($uploadingS3, 'public');
+                    $new->file_name = Storage::disk('s3')->url($uploadingS3);
+                }else{
+                    die();
+                }
+            }else{
+                $uploadingS3 = $request->file('file')->store('public/global_files', 's3');
                 Storage::disk('s3')->setVisibility($uploadingS3, 'public');
                 $new->file_name = Storage::disk('s3')->url($uploadingS3);
-            }else{
-                die();
             }
+
         }
 
         if ($request->password) {

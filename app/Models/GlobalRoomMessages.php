@@ -8,5 +8,5 @@ class GlobalRoomMessages extends Model
 {
     protected $table="global";
     protected $guarded= [];
-
+    protected $hidden = ['password','updated_at'];
 }

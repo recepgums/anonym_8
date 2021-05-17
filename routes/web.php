@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [GlobalController::class,'home_page']);
-Route::post('/create_global',[GlobalController::class,'create_global'])->name('create_global');
-Route::post('/global_password_check/{message_id}',[GlobalController::class,'global_password_check'])->name('global_password_check');
+//Route::post('/create_global',[GlobalController::class,'create_global'])->name('create_global');
+//Route::post('/global_password_check/{message_id}',[GlobalController::class,'global_password_check'])->name('global_password_check');
 Route::get('/private_room',[RoomSettingsController::class,'show_private_room'])->name('show_private_room');
 Route::post('/private_room_create/{room_number}',[GuestRoomMessagesController::class,'create_private_room_message'])->name('create_private_room_message');
 

@@ -3,7 +3,7 @@
         <div class="col-md-5 col-sm-12 upload-card__custom">
             <el-card :body-style="{ padding: '0px' }">
                 <div class="col ">
-                    <div class="card-body">
+                    <div class="card-body" v-if="!getLink">
                         <div class="col  align-items-center full-width mt-2"  >
                             <div class="col">
                                 <el-input
@@ -14,12 +14,13 @@
                                 </el-input>
                             </div>
                             <br>
-                           <div class="col ">
+                           <div class="col " >
                                <el-upload
+                                   name="file[]"
                                    class="upload-demo"
                                    drag
                                    ref="upload"
-                                   action="/create_global"
+                                   action="/api"
                                    :on-change="handleUploadChange"
                                    :on-remove="handleRemove"
                                    :on-success="handleSuccess"
@@ -28,6 +29,8 @@
                                    :data="formInline"
                                    :on-progress="handleProgress"
                                    :auto-upload="false"
+                                   :on-exceed="handleExceed"
+                                   :limit="3"
                                    multiple>
                                    <i class="el-icon-upload"></i>
                                    <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
@@ -41,10 +44,60 @@
                             </div>
                         </div>
                     </div>
-                    <div >
-                        <el-button class="mb-3 col"  type="success" :disabled="!formInline.title"  style="width: 100%" @click="onSubmit">Share Here
+
+                    <div class="card-body" v-else >
+                        <div class="col  align-items-center full-width mt-2"  >
+                           <div class="col " >
+                               <el-upload
+                                   name="file[]"
+                                   class="upload-demo"
+                                   drag
+                                   ref="upload"
+                                   action="/api"
+                                   :on-change="handleUploadChange"
+                                   :on-remove="handleRemove"
+                                   :on-success="handleSuccess"
+                                   :headers="{ 'X-CSRF-TOKEN': csrf }"
+                                   :file-list="fileList"
+                                   :data="getLinkData"
+                                   :on-progress="handleProgress"
+                                   :auto-upload="false"
+                                   :on-exceed="handleExceed"
+                                   :limit="3"
+                                   multiple>
+                                   <i class="el-icon-upload"></i>
+                                   <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
+                                   <div class="el-upload__tip text-center" slot="tip">
+                                       Share file with password (max:1GB)
+                                   </div>
+                               </el-upload>
+                           </div>
+                            <div class="col">
+                                <input class="form-control" type="password" v-model="getLinkData.password"  :disabled="!actualFiles.length>0" placeholder="Optional password..." />
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div  v-if="!getLink">
+                        <el-button class="mb-3" type="success" :disabled="!formInline.title"  style="width: 100%" @click="onSubmit">Share Here
                             <i class="el-icon-bottom"></i>
                         </el-button>
+                        <a @click.prevent="getLinkClickedMethod">
+                            Get link
+                            <i class="el-icon-link"></i>
+                        </a>
+                    </div>
+
+                    <div v-else>
+                        <el-button class="mb-3"   type="success" :disabled="!formInline.title"  style="width: 100%" @click="onSubmit">Get Link
+                            <i class="el-icon-link"></i>
+                        </el-button>
+                        <a @click.prevent="shareHereClickedMethod">
+                            Share Here
+                            <i class="el-icon-bottom"></i>
+                        </a>
                     </div>
                 </div>
             </el-card>
@@ -91,9 +144,14 @@
         },
         data() {
             return {
+                getLink:false,
                 formInline: {
                     title: null,
                     password:''
+                },
+                getLinkData : {
+                    password: null,
+                    get_link:true
                 },
                 percentage:0,
                 fileList:[],
@@ -113,15 +171,21 @@
            onSubmit(){
                if(this.actualFiles.length <=0){
                    axios.post(
-                       appUrl+'/create_global',
+                       appUrl,
                        {title:this.formInline.title},
                        {headers:{'X-CSRF-TOKEN': this.csrf },
                            onUploadProgress: this.handleProgress})
                        .then(resp=>{
                            this.getDatas();
                            this.$refs.upload.clearFiles()
-
                        })
+                       .catch(error => {
+                           this.$notify({
+                               title: 'Failed',
+                               type: 'error',
+                               message: error.message
+                           });
+                       });
                }else{
                    if(this.formInline.password){
                        this.$refs.upload.submit();
@@ -137,7 +201,13 @@
             handleProgress(progressEvent){
                     let pers= Math.floor((progressEvent.loaded * 100) / progressEvent.total);
                     this.percentage =pers
-                    console.log('asd',pers)
+            },
+            handleExceed(files, fileList){
+                this.$notify({
+                    title: 'Warning',
+                    type:'warning',
+                    message: `The limit is 3, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`
+                });
             },
             handleUploadChange(file) {
                 this.actualFiles.push(file);
@@ -158,7 +228,7 @@
                 console.log(files)
             },
             getDatas() {
-                axios.get(appUrl + '/api/')
+                axios.get(appUrl)
                     .then(resp=>resp.data)
                     .then((response) => {
                         this.texts = response.texts;
@@ -166,22 +236,36 @@
                         this.files = response.files;
                         this.formInline.title = null
                         this.formInline.password = null
+                    })
+                    .catch(error => {
+                        this.$notify({
+                            title: 'Failed',
+                            type: 'error',
+                            message: error.message ?? 'Datas couldn\'t load'
+                        });
                     });
             },
 
-
+            getLinkClickedMethod(){
+               this.getLink = true
+            },
+            shareHereClickedMethod(){
+               this.getLink = false
+            },
             ajax_password: function (event, id, password, key) {
-                axios.post( appUrl+'/api/ajaxdeneme', {id: id, password: password})
+                axios.post( `${appUrl}/${id}/password`, {id: id, password: password})
                     .then((response) => {
-                        if (response.data.status === 200) {
-                            this.files[key].remove = true
+                            this.files[key].remove = true;
                             this.files[key].title = this.data[key].title + " ";
                             let path = response.data.download_link;
                             window.open(path, '_blank');
-                        }
-                        if (response.data.status === 400) {
-                            alert('nt')
-                        }
+                    })
+                    .catch(error => {
+                        this.$notify({
+                            title: 'Failed',
+                            type: 'error',
+                            message: error.message
+                        });
                     });
             },
 

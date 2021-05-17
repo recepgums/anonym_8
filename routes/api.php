@@ -36,3 +36,6 @@ Route::get('/get/{id}', [FollowController::class,'detail']);
 Route::post('/{file_id}/password', [FollowController::class,'password']);
 Route::post('/', [FollowController::class,'upload']);
 
+//TODO get link
+//TODO rooms
+//TODO qr code

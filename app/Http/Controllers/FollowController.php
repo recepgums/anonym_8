@@ -26,13 +26,17 @@ class FollowController extends Controller
     public function index()
     {
         $texts = GlobalRoomMessages::where('file_name', null)->select(['id', 'title', 'created_at'])->orderBy('created_at')->get();
-        $youtubes = GlobalRoomMessages::where('file_name', null)->where('title', 'LIKE', '%youtube%')->select(['id', 'title', 'created_at'])->orderBy('created_at')->get();
-        $files = GlobalRoomMessages::whereNotNull('file_name')->whereNotNull('password')->orderBy('created_at')->select(['id', 'title', 'created_at'])->get();
+        $youtubes = GlobalRoomMessages::where('file_name', null)->where('title', 'LIKE', '%youtube%')->select(['id', 'title', 'created_at'])->orderBy('created_at','desc')->get();
+        $files = GlobalRoomMessages::whereNotNull('file_name')->whereNotNull('password')->orderBy('created_at','desc')->select(['id', 'title', 'created_at'])->get();
         return response()->json(['youtubes' => $youtubes, 'texts' => $texts, 'files' => $files],200);
     }
 
     public function detail($id)
     {
+
+
+
+
         try {
             return GlobalRoomMessages::findOrFail($id)->toArray();
         } catch (ModelNotFoundException $e) {

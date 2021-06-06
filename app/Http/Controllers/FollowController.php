@@ -105,7 +105,7 @@ class FollowController extends Controller
         $links = new Links();
         $links->url ="default";
         $links->save();
-        $location = Location::get();
+        $location = Location::get($request->ip());
         $new->ip_address = $location->regionName ."/".$location->countryName;
         $new->save();
         return response()->json(["data" => $new],200);

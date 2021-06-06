@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
-use Stevebauman\Location\Facades\Location;
 use ZipArchive;
 
 class GlobalController extends Controller

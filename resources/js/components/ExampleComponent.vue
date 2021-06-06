@@ -105,21 +105,30 @@
                 </div>
             </el-card>
         </div>
-        <div class="col-md-6 col-sm-12 upload-card__custom">
-            <Slayt style="width: 2em; height: 2em; background-color: transparent; z-index: 80;
+        <div class="col-md-6">
+            <div class="col-12 text-center" style="height: 85%;color: white">
+               <p style="padding-top: 200px">
+                   Your shared file will be at below.
+               </p>
+                <span style="color: rgb(94 116 28);font-size: 24px;font-weight: bold">
+                   Take a look at how it looks like.
+               </span>
+            </div>
+            <div class="col-12 col-sm-12 upload-card__custom">
+                <Slayt style="width: 2em; height: 2em; background-color: transparent; z-index: 80;
             bottom: 25px; position: absolute; border-width: 0 0.25em 0.25em 0; border-style: solid; border-color: antiquewhite; animation: scrolldown 1.2s ease-in-out infinite 0.15s;"></Slayt>
-            <Slayt style="width: 2em; height: 2em; background-color: transparent; z-index: 80;
+                <Slayt style="width: 2em; height: 2em; background-color: transparent; z-index: 80;
             bottom: 40px; position: absolute; border-width: 0 0.25em 0.25em 0; border-style: solid; border-color: antiquewhite; animation: scrolldown 1.2s ease-in-out infinite;"></Slayt>
 
+            </div>
         </div>
-
 
         <div class="col-12 d-none d-md-block mt-3  radius shadow en_dis_tabs" style="background-color:#155724">
             <b-tabs content-class="mt-3 py-2" class="radius shadow"  justified>
                 <b-tab title="Notes" >
-                <div class="chat_en_dis">
-                    <chat :propsData="texts" ></chat>
-                </div>
+                    <div class="chat_en_dis">
+                        <chat :propsData="texts" ></chat>
+                    </div>
                 </b-tab>
                 <b-tab title="Files" >
                     <files :propsData="files"></files>

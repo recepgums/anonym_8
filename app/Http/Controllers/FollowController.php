@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\GlobalRoomMessages;
 use App\Models\GuestRoomMessages;
+use App\Models\Links;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Stevebauman\Location\Facades\Location;
 
 class FollowController extends Controller
 {
@@ -25,7 +27,7 @@ class FollowController extends Controller
 
     public function index()
     {
-        $texts = GlobalRoomMessages::where('file_name', null)->select(['id', 'title', 'created_at'])->orderBy('created_at')->get();
+        $texts = GlobalRoomMessages::where('file_name', null)->select(['id', 'title','ip_address', 'created_at'])->orderBy('created_at','desc')->get();
         $youtubes = GlobalRoomMessages::where('file_name', null)->where('title', 'LIKE', '%youtube%')->select(['id', 'title', 'created_at'])->orderBy('created_at','desc')->get();
         $files = GlobalRoomMessages::whereNotNull('file_name')->whereNotNull('password')->orderBy('created_at','desc')->select(['id', 'title', 'created_at'])->get();
         return response()->json(['youtubes' => $youtubes, 'texts' => $texts, 'files' => $files],200);
@@ -100,6 +102,11 @@ class FollowController extends Controller
         if ($request->password) {
             $new->password = Hash::make($request->password);
         }
+        $links = new Links();
+        $links->url ="default";
+        $links->save();
+        $location = Location::get();
+        $new->ip_address = $location->regionName ."/".$location->countryName;
         $new->save();
         return response()->json(["data" => $new],200);
     }

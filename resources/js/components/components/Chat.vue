@@ -1,15 +1,15 @@
 <template>
         <div class="container">
-
             <div v-for="(item,key) in textComputed" :key="key" >
                 <div class="en-dis col">
                     <div class="message-div col">
-                        <a v-if="isUrl(item.title)" target="_blank" :href="item.title">{{item.title}}</a>
-                       <span v-else>{{item.title}}</span>
+                        <a style="margin-top:5px" v-if="isUrl(item.title)" target="_blank" :href="item.title">{{item.title}}</a>
+                       <span style="margin-top:5px" v-else>{{item.title}}</span>
+                        <a class="ip_address" :href="item.ip_address">{{item.ip_address}}</a>
                     </div>
                     <div class="message-footer col">
                         <div class="right">
-                            <small class="text-white">{{moment.duration(moment().diff(item.created_at)).humanize()}} ago</small>
+                            <small >{{moment.duration(moment().diff(item.created_at)).humanize()}} ago</small>
                         </div>
                     </div>
                 </div>
@@ -41,18 +41,19 @@
 
 <style scoped>
     .en-dis{
-        background-color:#636b6f ;
+        background-color: #fff;
         border-radius: 20px;
-        height: 80px;
-        width: auto;
+        min-height: 80px;
+        max-height: 800px;
+        height:auto;
+        width: 30%;
         margin: 20px 0;
-        padding-top:15px;
+        padding:15px 15px;
     }
     .message-div{
         overflow: scroll!important;
         font-size: 15px;
         height: 40px;
-        color: white;
         text-align: left;
     }
     .message-div::-webkit-scrollbar {
@@ -77,5 +78,10 @@
             width: 40%;
             overflow: scroll!important;
         }
+    }
+    .ip_address{
+        position:absolute!important;
+        top:0;
+        right:0;
     }
 </style>

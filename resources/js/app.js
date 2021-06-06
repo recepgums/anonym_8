@@ -7,6 +7,7 @@ Vue.component('privateroom', require('./components/PrivateRoom.vue'));
 import privateroom from './components/PrivateRoom.vue' //Importing
 import ExampleComponent from './components/ExampleComponent.vue' //Importing
 import BootstrapVue from 'bootstrap-vue' //Importing
+
 import moment from 'moment'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';

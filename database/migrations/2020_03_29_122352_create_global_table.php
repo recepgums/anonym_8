@@ -14,9 +14,14 @@ class CreateGlobalTable extends Migration
     public function up()
     {
         Schema::create('global', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('title');
+            $table->bigIncrements('id');
+
+            $table->string('title','10000');
+            $table->string('password')->nullable();
             $table->string('file_name')->nullable();
+            $table->string('ip_address');
+
+
             $table->timestamps();
         });
     }

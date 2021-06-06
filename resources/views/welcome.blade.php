@@ -144,8 +144,28 @@
             display: inline-block;
             color: #000000;
         }
+        Slayt{
+            left: 50%;
+            transform: translateY(0%) rotate(45deg);
+
+            opacity: 0;
+        }
+        @keyframes scrolldown {
+            0%{
+                transform: translateY(20%) rotate(45deg);
+                opacity: 0.7;
+            }
+            50%{
+                transform: translateY(0%) rotate(45deg);
+                opacity: 0.2;
+            }
+            100%{
+                transform: translateY(20%) rotate(45deg);
+                opacity: 0.7;
+            }
+        }
     </style>
-    <script src="http://malsup.github.com/jquery.form.js"></script>
+{{--    <script src="http://malsup.github.com/jquery.form.js"></script>--}}
     <script >
         $(document).ready(function(){
             $("#hamburger_menu_icon").click(function(){

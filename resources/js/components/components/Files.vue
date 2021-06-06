@@ -36,9 +36,13 @@
                     </div>
                     <div class="card-footer border-top"
                          style="background-color: #28A745;border-radius:0px 0px 20px 20px">
-                        <div style="text-align: right">
-                            <small class="text-white">{{moment.duration(moment().diff(item.created_at)).humanize()}}
-                                ago</small>
+                        <div @mouseover="mouseOverQr" class="float-left">
+<!--                            <vue-qrcode class="qr" value="Hello, World!" :options="{ width: width ,small:false,scale:scale}"></vue-qrcode>-->
+                        </div>
+                        <div >
+                            <small class="text-white float-right">
+                                {{moment.duration(moment().diff(item.created_at)).humanize()}} ago
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -55,7 +59,9 @@
         data() {
             return {
                 files: [],
-                recent_password: null
+                recent_password: null,
+                scale:1,
+                width:20
             }
         },
         watch: {
@@ -132,10 +138,20 @@
                 }
 
             },
+            mouseOverQr(){
+                this.scale = 20;
+                this.width = 400
+            }
         },
     }
 </script>
 
-<style scoped>
-
+<style >
+    .qr{
+        cursor:pointer;
+        z-index:999!important
+    }
+    .qr:hover{
+        background-color:red
+    }
 </style>
